@@ -1,0 +1,18 @@
+scalar Time
+scalar RecordID
+
+type Record {
+    id: RecordID!
+    text: String!
+    date: Time!
+}
+
+type Query {
+    getRecord(id: RecordID!): Record!
+    getRecords: [Record!]!
+}
+
+type Mutation {
+    saveRecord(text: String!): Record!
+    deleteRecord(id: RecordID!): Boolean
+}
