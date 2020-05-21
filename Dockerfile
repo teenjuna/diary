@@ -1,15 +1,21 @@
+# BUILD GO APP
 FROM golang:latest
-
-# Copy the code.
 WORKDIR /app
 COPY . .
+RUN go build -o build
 
-# Build the go app.
-RUN mkdir /build
-RUN go build -o /build/main .
+# BUILD REACT APP
+FROM node:latest as node
+WORKDIR /app
+COPY react-app .
+RUN yarn build -o build
 
-# Expose 4000 port.
+# PREPARE PRODUCTION
+FROM golang:latest
+WORKDIR /app
+COPY --from=0 /app/build server
+COPY --from=1 /app/build static
+
+# RUN THE APP
 EXPOSE 4000
-
-# Run the app. 
-CMD ["/build/main", "-port", "4000"]
+CMD ["./server", "-port", "4000", "-spa", "./static"]
