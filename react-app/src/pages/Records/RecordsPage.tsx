@@ -1,14 +1,33 @@
-import React from "react"
+import React, { FC } from "react"
 import { RouteComponentProps } from "@reach/router"
-import Page from "../../components/Page"
-import Header from "../../components/Page/Header"
+import { useQuery } from "@apollo/react-hooks"
+import { GetRecordsQuery } from "../../graphql/types/GetRecordsQuery"
+import GET_RECORDS_QUERY from "../../graphql/GetRecordsQuery"
+import styled from "styled-components"
+import RecordList from "./RecordList"
 
-export interface Props extends RouteComponentProps {}
+const RecordsPage: FC<RouteComponentProps> = () => {
+	const { data, loading } = useQuery<GetRecordsQuery>(GET_RECORDS_QUERY, {
+		onError: (error) => {
+			alert(error.message)
+		},
+	})
 
-export default function RecordsPage(props: Props) {
-  return (
-    <Page>
-      <Header>Records</Header>
-    </Page>
-  )
+	if (loading || !data) {
+		return null
+	}
+
+	return (
+		<Container>
+			<RecordList records={data.getRecords} />
+		</Container>
+	)
 }
+
+export default RecordsPage
+
+const Container = styled.div`
+	max-width: 14rem;
+
+	margin: 0 auto;
+`
