@@ -8,6 +8,7 @@ RUN go build -o build
 FROM node:latest as node
 WORKDIR /app
 COPY react-app .
+RUN yarn install
 RUN yarn build -o build
 
 # PREPARE PRODUCTION
