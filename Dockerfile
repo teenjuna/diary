@@ -5,7 +5,7 @@ COPY . .
 RUN go build -o build
 
 # BUILD REACT APP
-FROM node:latest as node
+FROM node:latest
 WORKDIR /app
 COPY react-app .
 RUN yarn install
@@ -19,4 +19,4 @@ COPY --from=1 /app/build static
 
 # RUN THE APP
 EXPOSE 4000
-CMD ["./server", "-port", "4000", "-spa", "./static"]
+CMD ["./server", "-port", "4000", "-static", "./static", "-bolt", "/app/volume/bolt.db"]

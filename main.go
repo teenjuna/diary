@@ -8,29 +8,47 @@ import (
 	"github.com/labstack/echo/middleware"
 	"github.com/ohgodwynona/diary/core"
 	"github.com/ohgodwynona/diary/graphql"
+	"github.com/ohgodwynona/diary/storages/bolt"
 	"github.com/ohgodwynona/diary/storages/memory"
 )
 
 var (
-	port string
+	port       string
+	boltPath   string
 	staticPath string
 )
 
 func init() {
 	flag.StringVar(&port, "port", "4000", "the port of the server")
-	flag.StringVar(&staticPath, "spa", "", "the path to the SPA to serve")
+	flag.StringVar(&boltPath, "bolt", "", "the path to the BoltDB file")
+	flag.StringVar(&staticPath, "static", "", "the path to the static to serve")
 	flag.Parse()
 }
 
 func main() {
-	diary := core.Diary{RecordStorage: memory.New().RecordStorage}
+	var recordStorage core.RecordStorage
+
+	// Create record storage.
+	if boltPath != "" {
+		bolt, err := bolt.New(boltPath)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		recordStorage = bolt.RecordStorage
+	} else {
+		recordStorage = memory.New().RecordStorage
+	}
+
+	// Create diary instance.
+	diary := core.Diary{RecordStorage: recordStorage}
 
 	e := echo.New()
-	e.HideBanner = true
 	e.HidePort = true
+	e.HideBanner = true
 	if staticPath != "" {
 		e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-			Root: staticPath,
+			Root:  staticPath,
 			HTML5: true,
 		}))
 	}
