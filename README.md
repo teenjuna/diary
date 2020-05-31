@@ -23,4 +23,3 @@ alias diary="docker run --rm -p 4000:4000 -v ~/.diary:/app/volume diary"
 ### Usage
 
 Type `diary` in your shell, go to `http://localhost:4000/` and start writing about your life.
-Note that all of your data is saved in `~/.diary` directory.
