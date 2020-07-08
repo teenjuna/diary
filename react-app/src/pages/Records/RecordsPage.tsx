@@ -1,33 +1,39 @@
-import React, { FC } from "react"
-import { RouteComponentProps } from "@reach/router"
-import { useQuery } from "@apollo/react-hooks"
-import { GetRecordsQuery } from "../../graphql/types/GetRecordsQuery"
-import GET_RECORDS_QUERY from "../../graphql/GetRecordsQuery"
-import styled from "styled-components"
-import RecordList from "./RecordList"
+import React from "react"
+import { RouteComponentProps, Link } from "@reach/router"
+import { useGetRecordsQuery } from "../../graphql/generated"
+import Page, {
+	Header,
+	Title,
+	Controls,
+	ActionButton,
+} from "../../components/Page"
+import { RecordLink } from "./RecordLink"
 
-const RecordsPage: FC<RouteComponentProps> = () => {
-	const { data, loading } = useQuery<GetRecordsQuery>(GET_RECORDS_QUERY, {
-		onError: (error) => {
-			alert(error.message)
-		},
-	})
+type Props = RouteComponentProps
 
-	if (loading || !data) {
-		return null
+export const RecordsPage = (props: Props) => {
+	const [recordsQuery] = useGetRecordsQuery()
+	if (recordsQuery.fetching) {
+		return <>Fetching records...</>
+	} else if (recordsQuery.error) {
+		return <>Error: {recordsQuery.error}</>
 	}
 
+	const records = recordsQuery.data!.getRecords
+
 	return (
-		<Container>
-			<RecordList records={data.getRecords} />
-		</Container>
+		<Page>
+			<Header>
+				<Title>All records</Title>
+				<Controls>
+					<ActionButton as={Link} to="/write">
+						Add record
+					</ActionButton>
+				</Controls>
+			</Header>
+			{records?.map((record, i) => (
+				<RecordLink record={record} key={i} />
+			))}
+		</Page>
 	)
 }
-
-export default RecordsPage
-
-const Container = styled.div`
-	max-width: 14rem;
-
-	margin: 0 auto;
-`

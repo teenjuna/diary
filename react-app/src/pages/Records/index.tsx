@@ -1,1 +1,1 @@
-export { default } from "./RecordsPage"
+export { RecordsPage as default } from "./RecordsPage"

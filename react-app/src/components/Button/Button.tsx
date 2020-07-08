@@ -1,29 +1,27 @@
 import styled from "styled-components"
-import { space, SpaceProps } from "styled-system"
+import { space, SpaceProps, layout, LayoutProps } from "styled-system"
 
-export default styled.button<SpaceProps>`
-	${space}
+//prettier-ignore
+type Props = 
+	SpaceProps &
+	LayoutProps
 
-	width: 6.25rem;
-	height: 3rem;
-
+export const Button = styled.button<Props>`
+	padding: 0.5rem 0.8rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-
 	color: black;
-	font-size: 0.875rem;
+	font-size: 1.1rem;
 	font-weight: bold;
 	text-transform: uppercase;
-
-	background-color: inherit;
-
-	border-radius: 0.25rem;
-	border: 4px solid #f3f3f3;
-
-	&:hover,
-	&:focus {
-		background-color: #f3f3f3;
+	background-color: #f5f5f5;
+	border-radius: 0.6rem;
+	border: 0;
+	&:hover {
+		background-color: #ebeaea;
 		cursor: pointer;
 	}
+	${space}
+	${layout}
 `

@@ -1,9 +1,9 @@
-import { gql } from "apollo-boost"
+import gql from "graphql-tag"
 import RecordFragment from "./RecordFragment"
 
 export default gql`
-	query GetRecordQuery($id: RecordID!) {
-		getRecord(id: $id) {
+	query GetRecords {
+		getRecords {
 			...Record
 		}
 	}
